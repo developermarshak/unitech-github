@@ -1,7 +1,10 @@
 {
   "extends": "../../packages/typescript-config/base.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": ".",
+    "outDir": "dist",
   },
   "include": ["src"],
   "exclude": ["node_modules"]

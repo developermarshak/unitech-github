@@ -1,7 +1,6 @@
 import { inject, injectable } from 'tsyringe';
 import { ulid } from 'ulid';
 import { UserRepository } from '../../../repositories/userRepository';
-import { hashPassword } from '../../../utils/passwordHasher';
 
 @injectable()
 export class CreateUserCommand {
@@ -9,7 +8,7 @@ export class CreateUserCommand {
 
   async execute(data: { email: string; password: string }) {
     const id = ulid();
-    const hashedPassword = await hashPassword(data.password);
+    const hashedPassword = "123"; //todo: hash password
     return this.userRepository.create({ id, email: data.email, password: hashedPassword });
   }
 }

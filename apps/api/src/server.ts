@@ -5,7 +5,6 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 
 import routes from './http/routes';
-import { errorHandler } from './http/middlewares/errorHandler';
 
 import './container';
 
@@ -16,7 +15,6 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use('/api', routes);
-app.use(errorHandler);
 
 const port = process.env.PORT || 3001;
 

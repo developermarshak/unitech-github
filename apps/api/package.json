@@ -17,19 +17,19 @@
     "dotenv": "^17.2.1",
     "express": "^4.21.2",
     "npx": "^10.2.2",
-    "pg": "^8.11.3",
-    "reflect-metadata": "^0.1.13",
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.1.14",
     "tsx": "^4.20.3",
-    "tsyringe": "^4.9.0",
-    "typeorm": "^0.3.20",
+    "tsyringe": "^4.10.0",
+    "typeorm": "^0.3.25",
     "ulid": "^3.0.1"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.0.0",
-    "@types/express": "^4.17.21",
-    "@types/node": "^20.14.2",
-    "@types/pg": "^8.10.9",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/express": "^4.17.23",
+    "@types/node": "^20.19.9",
+    "@types/pg": "^8.15.5",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.4.5"
+    "typescript": "^5.9.2"
   }
 }
