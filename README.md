@@ -23,6 +23,39 @@ This Turborepo includes the following packages and apps:
 
 Each package and app is 100% [TypeScript](https://www.typescriptlang.org/).
 
+## Development Setup
+
+### Prerequisites
+- [Docker](https://www.docker.com/) and Docker Compose
+- [pnpm](https://pnpm.io/) for package management
+
+### Database Setup
+
+1. Start the PostgreSQL database using Docker Compose:
+```sh
+docker-compose up -d
+```
+
+2. The database will be available at `localhost:5432` with the following credentials:
+   - Database: `unitech_dev`
+   - Username: `postgres`
+   - Password: `postgres`
+
+3. For the API to connect to the database, ensure your environment has:
+```
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/unitech_dev?schema=public"
+```
+
+4. To stop the database:
+```sh
+docker-compose down
+```
+
+5. To remove the database data (fresh start):
+```sh
+docker-compose down -v
+```
+
 ### Utilities
 
 This Turborepo has some additional tools already setup for you:
