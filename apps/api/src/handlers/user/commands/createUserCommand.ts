@@ -1,14 +1,24 @@
 import { inject, injectable } from 'tsyringe';
 import { ulid } from 'ulid';
 import { UserRepository } from '../../../repositories/userRepository';
+import { PasswordHasher } from '../../../security/passwordHasher';
+import { UserAlreadyExistsError } from '../../../errors/UserAlreadyExistsError';
 
 @injectable()
 export class CreateUserCommand {
-  constructor(@inject('UserRepository') private readonly userRepository: UserRepository) {}
+  constructor(
+    @inject('UserRepository') private readonly userRepository: UserRepository,
+    @inject('PasswordHasher') private readonly passwordHasher: PasswordHasher,
+  ) {}
 
   async execute(data: { email: string; password: string }) {
+    const existingUser = await this.userRepository.findByEmail(data.email);
+    if (existingUser) {
+      throw new UserAlreadyExistsError();
+    }
     const id = ulid();
-    const hashedPassword = "123"; //todo: hash password
+    const hashedPassword = await this.passwordHasher.hash(data.password);
+
     return this.userRepository.create({ id, email: data.email, password: hashedPassword });
   }
 }

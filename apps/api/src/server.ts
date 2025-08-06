@@ -5,17 +5,26 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 
 import routes from './http/routes';
+import { errorHandler } from './http/middlewares/errorHandler';
 
 import './container';
 
 dotenv.config();
 
-const app: express.Application = express();
-app.use(cors());
-app.use(bodyParser.json());
+export function createApp(): express.Application {
+  const app: express.Application = express();
+  app.use(cors());
+  app.use(bodyParser.json());
 
-app.use('/api', routes);
+  app.use('/api', routes);
 
+  // Error handling middleware should be last
+  app.use(errorHandler);
+
+  return app;
+}
+
+const app = createApp();
 const port = process.env.PORT || 3001;
 
 app.listen(port, () => {

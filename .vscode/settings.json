@@ -3,5 +3,17 @@
     {
       "mode": "auto"
     }
+  ],
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5555,
+      "driver": "PostgreSQL",
+      "name": "local5555",
+      "database": "unitech_dev",
+      "username": "postgres",
+      "password": "postgres"
+    }
   ]
 }

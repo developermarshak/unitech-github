@@ -1,12 +1,17 @@
 {
   "name": "@repo/contracts",
   "version": "0.0.0",
+  "main": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts"
   },
   "license": "MIT",
   "scripts": {
+    "build": "tsc",
     "lint": "eslint \"**/*.ts\""
+  },
+  "dependencies": {
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

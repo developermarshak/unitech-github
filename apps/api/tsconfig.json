@@ -5,6 +5,9 @@
     "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "outDir": "dist",
+    "paths": {
+      "@repo/contracts": ["../../packages/contracts/src"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules"]

@@ -14,4 +14,8 @@ export class UserRepository {
     const user = this.userRepository.create({ ...data, created_at: new Date() });
     return this.userRepository.save(user);
   }
+
+  findByEmail(email: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { email } });
+  }
 }

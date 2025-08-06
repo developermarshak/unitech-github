@@ -1,15 +1,47 @@
 import { Request, Response, NextFunction } from 'express';
-import { container } from '../../container';
+import { inject, injectable } from 'tsyringe';
+import { ZodError } from 'zod';
 import { CreateUserCommand } from '../../handlers/user/commands/createUserCommand';
+import { CreateSessionUserCommand } from '../../handlers/user/commands/createSessionUserCommand';
+import { ValidationError } from '../../errors/ValidationError';
+import {
+  createUserRequestSchema,
+  createSessionRequestSchema,
+} from '@repo/contracts';
 
+@injectable()
 export class UserController {
+  constructor(
+    @inject(CreateUserCommand)
+    private readonly createUserCommand: CreateUserCommand,
+    @inject(CreateSessionUserCommand)
+    private readonly createSessionUserCommand: CreateSessionUserCommand,
+  ) {}
 
   async createUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const command = container.resolve(CreateUserCommand);
-      const user = await command.execute(req.body);
-      res.status(201).json(user);
+      // ✅ Validate and coerce request body
+      const data = createUserRequestSchema.parse(req.body);
+      await this.createUserCommand.execute(data);
+      res.status(201).send();
     } catch (error) {
+      if (error instanceof ZodError) {
+        return next(new ValidationError('Invalid request data', error.errors));
+      }
+      next(error);
+    }
+  }
+
+  async createSession(req: Request, res: Response, next: NextFunction) {
+    try {
+      // ✅ Validate and coerce request body
+      const data = createSessionRequestSchema.parse(req.body);
+      const { accessToken } = await this.createSessionUserCommand.execute(data);
+      res.json({ accessToken });
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return next(new ValidationError('Invalid request data', error.errors));
+      }
       next(error);
     }
   }

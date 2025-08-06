@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { User } from '../entities/User';
+import { User } from '../entities/User.js';
 import dotenv from 'dotenv';
 
 dotenv.config(); //todo: use sep config class
