@@ -22,7 +22,7 @@ export class CreateSessionUserCommand {
     if (!user || !(await this.passwordHasher.verify(data.password, user.password))) {
       throw new AuthenticationError();
     }
-
+    //move to utils (jwt signer)
     const accessToken = s.sign({ userId: user.id, sessionId }, jwtConfig.privateKey, {
       expiresIn: '365d',
       algorithm: 'RS256',

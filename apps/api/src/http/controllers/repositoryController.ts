@@ -8,14 +8,14 @@ import { createRepositoryRequestSchema } from '@repo/contracts';
 export class RepositoryController {
   async addRepository(req: Request, res: Response, next: NextFunction) {
     try {
-      // ✅ Validate and coerce request body
       const data = createRepositoryRequestSchema.parse(req.body);
       
-      // Console log the request as requested
-      console.log('Repository request:', data);
+      const userId = req.user?.id;
+      const sessionId = req.user?.sessionId;
       
-      // Log the authenticated user information
-      console.log('Authenticated user:', req.user);
+      console.log('Repository request:', data);
+      console.log('User ID:', userId);
+      console.log('Session ID:', sessionId);
       
       res.status(201).send();
     } catch (error) {
