@@ -34,7 +34,6 @@ export class UserController {
 
   async createSession(req: Request, res: Response, next: NextFunction) {
     try {
-      // ✅ Validate and coerce request body
       const data = createSessionRequestSchema.parse(req.body);
       const { accessToken } = await this.createSessionUserCommand.execute(data);
       res.json({ accessToken });

@@ -6,6 +6,7 @@ import { CreateSessionUserCommand } from './handlers/user/commands/createSession
 import { UserRepository } from './repositories/userRepository';
 import { PasswordHasher } from './security/passwordHasher';
 import { CreateUserCommand } from './handlers/user/commands/createUserCommand';
+import { RepositoryController } from './http/controllers/repositoryController';
 
 // Initialize TypeORM DataSource
 AppDataSource.initialize()
@@ -29,6 +30,10 @@ container.register<CreateSessionUserCommand>('CreateSessionUserCommand', {
 
 container.register<CreateUserCommand>('CreateUserCommand', {
   useClass: CreateUserCommand,
+});
+
+container.register<RepositoryController>('RepositoryController', {
+  useClass: RepositoryController,
 });
 
 //todo: Some solution to auto register all commands and queries

@@ -25,6 +25,7 @@ export class CreateSessionUserCommand {
 
     const accessToken = s.sign({ userId: user.id, sessionId }, jwtConfig.privateKey, {
       expiresIn: '365d',
+      algorithm: 'RS256',
     });
 
     return { accessToken };

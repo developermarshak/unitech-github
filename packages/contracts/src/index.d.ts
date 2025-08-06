@@ -27,7 +27,15 @@ export declare const createSessionRequestSchema: z.ZodObject<{
     password: string;
 }>;
 export type CreateSessionRequest = z.infer<typeof createSessionRequestSchema>;
-export type CreateRepoRequest = {
-    repoName: string;
-};
+/**
+ * Validation schema and inferred-type for POST /repositories
+ */
+export declare const createRepositoryRequestSchema: z.ZodObject<{
+    path: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    path: string;
+}, {
+    path: string;
+}>;
+export type CreateRepositoryRequest = z.infer<typeof createRepositoryRequestSchema>;
 //# sourceMappingURL=index.d.ts.map

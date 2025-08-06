@@ -18,6 +18,10 @@ export const createSessionRequestSchema = z.object({
 });
 export type CreateSessionRequest = z.infer<typeof createSessionRequestSchema>;
 
-export type CreateRepoRequest = {
-  repoName: string;
-};
+/**
+ * Validation schema and inferred-type for POST /repositories
+ */
+export const createRepositoryRequestSchema = z.object({
+  path: z.string().regex(/^[^\/]+\/[^\/]+$/, 'Path must be in format owner/repo'),
+});
+export type CreateRepositoryRequest = z.infer<typeof createRepositoryRequestSchema>;
