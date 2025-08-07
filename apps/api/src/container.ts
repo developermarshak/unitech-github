@@ -9,7 +9,9 @@ import { PasswordHasher } from './security/passwordHasher';
 import { CreateUserCommand } from './handlers/user/commands/createUserCommand';
 import { CreateRepositoryCommand } from './handlers/repository/commands/createRepositoryCommand';
 import { GetRepositoriesByUserIdQuery } from './handlers/repository/queries/getRepositoriesByUserIdQuery';
+import { GetRepositoryInfoFromGitHubQuery } from './handlers/repository/queries/getRepositoryInfoFromGitHubQuery';
 import { RepositoryController } from './http/controllers/repositoryController';
+import { GitHubService } from './services/githubService';
 
 // Initialize TypeORM DataSource
 AppDataSource.initialize()
@@ -44,6 +46,14 @@ container.register<CreateRepositoryCommand>('CreateRepositoryCommand', {
 
 container.register<GetRepositoriesByUserIdQuery>('GetRepositoriesByUserIdQuery', {
   useClass: GetRepositoriesByUserIdQuery,
+});
+
+container.register<GetRepositoryInfoFromGitHubQuery>('GetRepositoryInfoFromGitHubQuery', {
+  useClass: GetRepositoryInfoFromGitHubQuery,
+});
+
+container.register<GitHubService>('GitHubService', {
+  useClass: GitHubService,
 });
 
 container.register<RepositoryController>('RepositoryController', {
