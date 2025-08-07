@@ -11,6 +11,9 @@
     "prettier": "^3.6.2",
     "turbo": "^2.5.5"
   },
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
   "packageManager": "pnpm@10.14.0",
   "name": "with-vite-react"
 }

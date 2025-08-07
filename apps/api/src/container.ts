@@ -4,7 +4,6 @@ import { DataSource } from 'typeorm';
 import { AppDataSource } from './config/database';
 import { CreateSessionUserCommand } from './handlers/user/commands/createSessionUserCommand';
 import { UserRepository } from './repositories/userRepository';
-import { RepositoryRepository } from './repositories/repositoryRepository';
 import { PasswordHasher } from './security/passwordHasher';
 import { CreateUserCommand } from './handlers/user/commands/createUserCommand';
 import { CreateRepositoryCommand } from './handlers/repository/commands/createRepositoryCommand';
@@ -12,6 +11,7 @@ import { GetRepositoriesByUserIdQuery } from './handlers/repository/queries/getR
 import { GetRepositoryInfoFromGitHubQuery } from './handlers/repository/queries/getRepositoryInfoFromGitHubQuery';
 import { RepositoryController } from './http/controllers/repositoryController';
 import { GitHubService } from './services/githubService';
+import { UpdateRepositoryCommand } from './handlers/repository/commands/updateRepositoryCommand';
 
 // Initialize TypeORM DataSource
 AppDataSource.initialize()
@@ -26,9 +26,6 @@ container.register<DataSource>('DataSource', { useValue: AppDataSource });
 container.register<UserRepository>('UserRepository', {
   useClass: UserRepository,
 });
-container.register<RepositoryRepository>('RepositoryRepository', {
-  useClass: RepositoryRepository,
-});
 container.register<PasswordHasher>('PasswordHasher', {
   useClass: PasswordHasher,
 });
@@ -42,6 +39,10 @@ container.register<CreateUserCommand>('CreateUserCommand', {
 
 container.register<CreateRepositoryCommand>('CreateRepositoryCommand', {
   useClass: CreateRepositoryCommand,
+});
+
+container.register<UpdateRepositoryCommand>('UpdateRepositoryCommand', {
+  useClass: UpdateRepositoryCommand,
 });
 
 container.register<GetRepositoriesByUserIdQuery>('GetRepositoriesByUserIdQuery', {

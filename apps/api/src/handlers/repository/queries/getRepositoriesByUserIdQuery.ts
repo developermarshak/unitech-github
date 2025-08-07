@@ -1,13 +1,19 @@
 import { inject, injectable } from 'tsyringe';
-import { RepositoryRepository } from '../../../repositories/repositoryRepository';
+import { DataSource, Repository } from 'typeorm';
+import { Repository as RepositoryEntity } from '../../../entities/Repository';
 
 @injectable()
 export class GetRepositoriesByUserIdQuery {
-  constructor(
-    @inject('RepositoryRepository') private readonly repositoryRepository: RepositoryRepository,
-  ) {}
+  private repositoryRepository: Repository<RepositoryEntity>;
+
+  constructor(@inject('DataSource') private readonly dataSource: DataSource) {
+    this.repositoryRepository = this.dataSource.getRepository(RepositoryEntity);
+  }
 
   async execute(userId: string) {
-    return this.repositoryRepository.findByUserId(userId);
+    return this.repositoryRepository.find({
+      where: { userId },
+      order: { createdAt: 'DESC' }
+    });
   }
 } 

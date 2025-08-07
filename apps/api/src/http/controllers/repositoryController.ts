@@ -1,16 +1,20 @@
 import { Request, Response, NextFunction } from 'express';
 import { injectable, inject } from 'tsyringe';
-import { ZodError } from 'zod';
 import { ValidationError } from '../../errors/ValidationError';
-import { createRepositoryRequestSchema } from '@repo/contracts';
+import { createRepositoryRequestSchema, updateRepositoryRequestSchema } from '@repo/contracts';
 import { CreateRepositoryCommand } from '../../handlers/repository/commands/createRepositoryCommand';
+import { UpdateRepositoryCommand } from '../../handlers/repository/commands/updateRepositoryCommand';
 import { GetRepositoriesByUserIdQuery } from '../../handlers/repository/queries/getRepositoriesByUserIdQuery';
+import { GetRepositoryInfoFromGitHubQuery } from '../../handlers/repository/queries/getRepositoryInfoFromGitHubQuery';
+import { InvalidProjectPathError } from '../../errors/InvalidProjectPathError';
 
 @injectable()
 export class RepositoryController {
   constructor(
     @inject('CreateRepositoryCommand') private readonly createRepositoryCommand: CreateRepositoryCommand,
+    @inject('UpdateRepositoryCommand') private readonly updateRepositoryCommand: UpdateRepositoryCommand,
     @inject('GetRepositoriesByUserIdQuery') private readonly getRepositoriesByUserIdQuery: GetRepositoriesByUserIdQuery,
+    @inject('GetRepositoryInfoFromGitHubQuery') private readonly getRepositoryInfoFromGitHubQuery: GetRepositoryInfoFromGitHubQuery,
   ) {}
 
   async addRepository(req: Request, res: Response, next: NextFunction) {
@@ -21,17 +25,40 @@ export class RepositoryController {
       if (!userId) {
         return res.status(401).json({ error: 'User not authenticated' });
       }
-      
+
+      const repoInfo = await this.getRepositoryInfoFromGitHubQuery.execute(data.path);
+
       await this.createRepositoryCommand.execute({
         userId,
-        projectPath: data.path,
+        repoInfo,
       });
-      
-      res.status(201);
+
     } catch (error) {
-      if (error instanceof ZodError) {
-        return next(new ValidationError('Invalid request data', error.errors));
+      if (error instanceof InvalidProjectPathError) {
+        return next(new ValidationError('Invalid project path', [error.message]));
       }
+      
+      next(error);
+    }
+  }
+
+  async updateRepository(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = updateRepositoryRequestSchema.parse(req.body);
+
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+
+      const repoInfo = await this.getRepositoryInfoFromGitHubQuery.execute(data.path);
+
+      await this.updateRepositoryCommand.execute({
+        id: data.id,
+        userId,
+        repoInfo: repoInfo,
+      });
+    } catch (error) {
       next(error);
     }
   }

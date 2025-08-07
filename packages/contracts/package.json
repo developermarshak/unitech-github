@@ -11,9 +11,6 @@
     "build": "tsc",
     "lint": "eslint \"**/*.ts\""
   },
-  "dependencies": {
-    "zod": "^3.22.4"
-  },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",

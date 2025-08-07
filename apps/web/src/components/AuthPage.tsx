@@ -7,7 +7,6 @@ import {
   Button,
   Typography,
   Link,
-  Divider,
   Container,
   Avatar,
   Checkbox,

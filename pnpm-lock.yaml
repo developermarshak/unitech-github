@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      zod:
+        specifier: ^3.22.4
+        version: 3.25.76
     devDependencies:
       eslint:
         specifier: ^8.57.1
@@ -156,10 +160,6 @@ importers:
         version: 5.4.19(@types/node@20.19.9)
 
   packages/contracts:
-    dependencies:
-      zod:
-        specifier: ^3.22.4
-        version: 3.25.76
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*

@@ -25,3 +25,12 @@ export const createRepositoryRequestSchema = z.object({
   path: z.string().regex(/^[^\/]+\/[^\/]+$/, 'Path must be in format owner/repo'),
 });
 export type CreateRepositoryRequest = z.infer<typeof createRepositoryRequestSchema>;
+
+/**
+ * Validation schema and inferred-type for PUT /repositories
+ */
+export const updateRepositoryRequestSchema = z.object({
+  id: z.string(),
+  path: z.string().regex(/^[^\/]+\/[^\/]+$/, 'Path must be in format owner/repo'),
+});
+export type UpdateRepositoryRequest = z.infer<typeof updateRepositoryRequestSchema>;

@@ -1,15 +1,28 @@
 import { inject, injectable } from 'tsyringe';
 import { ulid } from 'ulid';
-import { RepositoryRepository } from '../../../repositories/repositoryRepository';
+import { DataSource, Repository } from 'typeorm';
+import { Repository as RepositoryEntity } from '../../../entities/Repository';
+import { GitHubRepositoryInfo } from '../../../services/githubService';
 
 @injectable()
 export class CreateRepositoryCommand {
-  constructor(
-    @inject('RepositoryRepository') private readonly repositoryRepository: RepositoryRepository,
-  ) {}
+  private repositoryRepository: Repository<RepositoryEntity>;
 
-  async execute(data: { userId: string; projectPath: string }) {
+  constructor(@inject('DataSource') private readonly dataSource: DataSource) {
+    this.repositoryRepository = this.dataSource.getRepository(RepositoryEntity);
+  }
+
+  async execute(data: { userId: string; repoInfo: GitHubRepositoryInfo }) {
     const id = ulid();
-    return this.repositoryRepository.create({ id, ...data });
+    const repository = this.repositoryRepository.create({
+      id,
+      userId: data.userId,
+      projectPath: data.repoInfo.projectPath,
+      stars: data.repoInfo.stars,
+      forks: data.repoInfo.forks,
+      issues: data.repoInfo.issues,
+      notExist: data.repoInfo.notExist
+    });
+    this.repositoryRepository.save(repository);
   }
 } 

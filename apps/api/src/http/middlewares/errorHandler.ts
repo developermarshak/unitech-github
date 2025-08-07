@@ -41,7 +41,7 @@ export function errorHandler(
     return res.status(400).json({
       error: 'Validation Error',
       message: error.message,
-      details: error.errors,
+      details: error.errors || error.message,
     });
   }
 
