@@ -1,4 +1,4 @@
-import { apiClient } from '@repo/api-client';
+import { useAuthForm } from '../hooks/useAuthForm';
 import React, { useState } from 'react';
 import {
   Box,
@@ -9,15 +9,11 @@ import {
   Typography,
   Link,
   Container,
-  Avatar,
-  Checkbox,
-  FormControlLabel,
   Alert,
   InputAdornment,
   IconButton,
 } from '@mui/material';
 import {
-  LockOutlined,
   Visibility,
   VisibilityOff,
 } from '@mui/icons-material';
@@ -27,99 +23,17 @@ interface AuthPageProps {
 }
 
 export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
-  const [isSignUp, setIsSignUp] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    agreeToTerms: false,
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleInputChange = (field: string) => (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    setFormData(prev => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
-    if (errors[field] || errors.form) {
-      setErrors(prev => ({ ...prev, [field]: '', form: '' }));
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
-    }
-
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
-    }
-
-
-
-    if (isSignUp && !formData.agreeToTerms) {
-      newErrors.agreeToTerms = 'You must agree to the terms and conditions';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    
-    if (!validateForm()) return;
-
-    setIsLoading(true);
-    
-    try {
-      if (isSignUp) {
-        await apiClient.signup({
-          email: formData.email,
-          password: formData.password,
-        });
-        // Optionally, switch to sign-in mode after successful sign-up
-        toggleMode();
-      } else {
-        const { accessToken } = await apiClient.signin({
-          email: formData.email,
-          password: formData.password,
-        });
-        console.log('Signed in successfully, token:', accessToken);
-        localStorage.setItem('accessToken', accessToken);
-      }
-      
-      if (onSuccess && !isSignUp) {
-        onSuccess(localStorage.getItem('accessToken') as string);
-      }
-    } catch (error: any) {
-      setErrors(prev => ({ ...prev, form: error.message || 'An unexpected error occurred' }));
-      console.error('Auth error:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const toggleMode = () => {
-    setIsSignUp(!isSignUp);
-    setFormData({
-      email: '',
-      password: '',
-      agreeToTerms: false,
-    });
-    setErrors({});
-    if (errors.form) {
-      setErrors(prev => ({...prev, form: ''}));
-    }
-  };
+  const {
+    isSignUp,
+    formData,
+    errors,
+    isLoading,
+    handleInputChange,
+    handleSubmit,
+    toggleMode,
+  } = useAuthForm({ onSuccess });
 
   return (
     <Container component="main" maxWidth="sm">
@@ -148,16 +62,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
                 mb: 3,
               }}
             >
-              <Avatar
-                sx={{
-                  m: 1,
-                  bgcolor: 'primary.main',
-                  width: 56,
-                  height: 56,
-                }}
-              >
-                <LockOutlined />
-              </Avatar>
               <Typography component="h1" variant="h4" fontWeight="bold">
                 {isSignUp ? 'Sign up' : 'Welcome Back'}
               </Typography>
@@ -168,8 +72,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
                 }
               </Typography>
             </Box>
-
-
 
             <Box component="form" onSubmit={handleSubmit} noValidate>
               <TextField
@@ -210,44 +112,11 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
                 }}
               />
 
-              {isSignUp && (
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={formData.agreeToTerms}
-                      onChange={handleInputChange('agreeToTerms')}
-                      disabled={isLoading}
-                    />
-                  }
-                  label={
-                    <Typography variant="body2">
-                      I agree to the{' '}
-                      <Link href="#" underline="hover">
-                        Terms of Service
-                      </Link>{' '}
-                      and{' '}
-                      <Link href="#" underline="hover">
-                        Privacy Policy
-                      </Link>
-                    </Typography>
-                  }
-                  sx={{ mb: 2 }}
-                />
-              )}
-
-              {errors.agreeToTerms && (
-                <Alert severity="error" sx={{ mb: 2 }}>
-                  {errors.agreeToTerms}
-                </Alert>
-              )}
-
               {errors.form && (
                 <Alert severity="error" sx={{ mb: 2 }}>
                   {errors.form}
                 </Alert>
               )}
-
-
 
               <Button
                 type="submit"
@@ -293,7 +162,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
           align="center"
           sx={{ mt: 3 }}
         >
-          © 2024 Your Company. All rights reserved.
+          © 2025 The Coolest Company. All rights reserved.
         </Typography>
       </Box>
     </Container>

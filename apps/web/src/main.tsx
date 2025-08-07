@@ -1,8 +1,9 @@
 import { configureApiClient } from "@repo/api-client";
-import { useState } from "react";
+import { useAuth } from "./hooks/useAuth";
 import { createRoot } from "react-dom/client";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { Box, Button } from "@mui/material";
 import { AuthPage, RepositoryPage } from "./components";
 
 configureApiClient({
@@ -49,18 +50,30 @@ const theme = createTheme({
 });
 
 const App = () => {
-  const [accessToken, setAccessToken] = useState<string | null>(() => localStorage.getItem("accessToken"));
-
-  const handleAuthSuccess = (token: string) => {
-    setAccessToken(token);
-    console.log("User authenticated successfully!");
-  };
+  const { token: accessToken, setToken, logout } = useAuth();
 
   if (!accessToken) {
-    return <AuthPage onSuccess={handleAuthSuccess} />;
+    return <AuthPage onSuccess={setToken} />;
   }
 
-  return <RepositoryPage accessToken={accessToken} />;
+  return (
+    <>
+      <RepositoryPage />
+      <Box
+        component="footer"
+        sx={{
+          mt: 4,
+          mb: 2,
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Button size="small" variant="text" color="inherit" onClick={logout}>
+          Log out
+        </Button>
+      </Box>
+    </>
+  );
 };
 
 createRoot(document.getElementById("app")!).render(

@@ -1,112 +1,99 @@
 import { CreateSessionRequest, CreateUserRequest, GetRepositoriesResponse, getRepositoriesResponseSchema, CreateRepositoryRequest, UpdateRepositoryRequest } from "@repo/contracts";
 
 let API_BASE_URL = '/api';
+let ACCESS_TOKEN: string | null = null;
 
-export function configureApiClient(options: { baseUrl: string }) {
-  API_BASE_URL = options.baseUrl;
+// Helper function to handle common request patterns
+async function makeRequest(
+  endpoint: string, 
+  options: {
+    method?: string;
+    body?: any;
+    requireAuth?: boolean;
+  } = {}
+) {
+  const { method = 'GET', body, requireAuth = true } = options;
+  
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  
+  if (requireAuth && ACCESS_TOKEN) {
+    headers['Authorization'] = `Bearer ${ACCESS_TOKEN}`;
+  }
+  
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method,
+    headers,
+    ...(body && { body: JSON.stringify(body) }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || `Request failed with status ${response.status}`);
+  }
+
+  return response;
+}
+
+export function configureApiClient(options: { baseUrl?: string; accessToken?: string }) {
+    if (options.baseUrl) {
+        API_BASE_URL = options.baseUrl;
+    }
+    if (options.accessToken) {
+        ACCESS_TOKEN = options.accessToken;
+    }
+}
+
+export function setAccessToken(token: string | null) {
+    ACCESS_TOKEN = token;
 }
 
 export const apiClient = {
   signup: async (data: CreateUserRequest) => {
-    const response = await fetch(`${API_BASE_URL}/users`, {
+    const response = await makeRequest('/users', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
+      body: data,
+      requireAuth: false,
     });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Signup failed');
-    }
-
     return response.status;
   },
 
   signin: async (data: CreateSessionRequest) => {
-    const response = await fetch(`${API_BASE_URL}/users/session`, {
+    const response = await makeRequest('/users/session', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
+      body: data,
+      requireAuth: false,
     });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Signin failed');
-    }
-
     return response.json();
   },
 
-  getRepositories: async (accessToken: string): Promise<GetRepositoriesResponse> => {
-    const response = await fetch(`${API_BASE_URL}/repositories`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Fetching repositories failed');
-    }
-
+  getRepositories: async (): Promise<GetRepositoriesResponse> => {
+    const response = await makeRequest('/repositories');
     const data = await response.json();
     return getRepositoriesResponseSchema.parse(data);
   },
 
-  addRepository: async (accessToken: string, data: CreateRepositoryRequest) => {
-    const response = await fetch(`${API_BASE_URL}/repositories`, {
+  addRepository: async (data: CreateRepositoryRequest) => {
+    const response = await makeRequest('/repositories', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(data),
+      body: data,
     });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Add repository failed');
-    }
-
     return response.status;
   },
 
-  updateRepository: async (accessToken: string, data: UpdateRepositoryRequest) => {
-    const response = await fetch(`${API_BASE_URL}/repositories`, {
+  updateRepository: async (data: UpdateRepositoryRequest) => {
+    const response = await makeRequest('/repositories', {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(data),
+      body: data,
     });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Update repository failed');
-    }
-
     return response.status;
   },
 
-  deleteRepository: async (accessToken: string, repositoryId: string) => {
-    const response = await fetch(`${API_BASE_URL}/repositories/${repositoryId}`, {
+  deleteRepository: async (repositoryId: string) => {
+    const response = await makeRequest(`/repositories/${repositoryId}`, {
       method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-      },
     });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Delete repository failed');
-    }
-
     return response.status;
   },
 };
