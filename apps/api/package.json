@@ -10,6 +10,7 @@
     "generate:jwt-keys": "mkdir -p .keys && openssl genrsa -out .keys/jwtRS256.key 2048 && openssl rsa -in .keys/jwtRS256.key -pubout -out .keys/jwtRS256.key.pub"
   },
   "dependencies": {
+    "@octokit/rest": "^22.0.0",
     "@types/body-parser": "^1.19.6",
     "@types/cors": "^2.8.19",
     "bcryptjs": "^2.4.3",

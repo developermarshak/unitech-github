@@ -4,8 +4,11 @@ import { DataSource } from 'typeorm';
 import { AppDataSource } from './config/database';
 import { CreateSessionUserCommand } from './handlers/user/commands/createSessionUserCommand';
 import { UserRepository } from './repositories/userRepository';
+import { RepositoryRepository } from './repositories/repositoryRepository';
 import { PasswordHasher } from './security/passwordHasher';
 import { CreateUserCommand } from './handlers/user/commands/createUserCommand';
+import { CreateRepositoryCommand } from './handlers/repository/commands/createRepositoryCommand';
+import { GetRepositoriesByUserIdQuery } from './handlers/repository/queries/getRepositoriesByUserIdQuery';
 import { RepositoryController } from './http/controllers/repositoryController';
 
 // Initialize TypeORM DataSource
@@ -21,6 +24,9 @@ container.register<DataSource>('DataSource', { useValue: AppDataSource });
 container.register<UserRepository>('UserRepository', {
   useClass: UserRepository,
 });
+container.register<RepositoryRepository>('RepositoryRepository', {
+  useClass: RepositoryRepository,
+});
 container.register<PasswordHasher>('PasswordHasher', {
   useClass: PasswordHasher,
 });
@@ -30,6 +36,14 @@ container.register<CreateSessionUserCommand>('CreateSessionUserCommand', {
 
 container.register<CreateUserCommand>('CreateUserCommand', {
   useClass: CreateUserCommand,
+});
+
+container.register<CreateRepositoryCommand>('CreateRepositoryCommand', {
+  useClass: CreateRepositoryCommand,
+});
+
+container.register<GetRepositoriesByUserIdQuery>('GetRepositoriesByUserIdQuery', {
+  useClass: GetRepositoriesByUserIdQuery,
 });
 
 container.register<RepositoryController>('RepositoryController', {
