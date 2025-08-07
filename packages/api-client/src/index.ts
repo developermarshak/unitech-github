@@ -30,7 +30,14 @@ async function makeRequest(
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.message || `Request failed with status ${response.status}`);
+    let error = `Request failed with status ${response.status}`;
+    if (errorData.error === 'Validation Error') {
+        error = errorData.details[0]?.message || 'Validation Error';
+    }
+    else if (errorData.message) {
+        error = errorData.message;
+    }
+    throw new Error(error);
   }
 
   return response;

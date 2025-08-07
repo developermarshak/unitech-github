@@ -4,7 +4,8 @@ import { createRoot } from "react-dom/client";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Box, Button } from "@mui/material";
-import { AuthPage, RepositoryPage } from "./components";
+import { AuthPage } from "./pages/AuthPage";
+import { RepositoryPage } from "./pages/RepositoryPage";
 
 configureApiClient({
   baseUrl: import.meta.env.VITE_API_URL || "/api",

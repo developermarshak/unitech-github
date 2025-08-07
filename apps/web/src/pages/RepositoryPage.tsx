@@ -14,7 +14,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
 import { useRepositories } from '../hooks/useRepositories';
-import { RepositoryResponse } from '@repo/contracts';
+import { RepositorySchema } from '../hooks/useRepositories';
 
 export const RepositoryPage: React.FC = () => {
   const [repoInput, setRepoInput] = useState('');
@@ -74,7 +74,7 @@ export const RepositoryPage: React.FC = () => {
           </Typography>
         )}
 
-        {repositories.map((repo: RepositoryResponse) => (
+        {repositories.map((repo: RepositorySchema) => (
           <Card sx={{ borderRadius: 1, mb: 2 }} key={repo.id}>
             <CardContent>
               <Typography variant="h6" fontWeight="bold">
@@ -95,17 +95,18 @@ export const RepositoryPage: React.FC = () => {
                     Not found
                   </Typography>
                 )}
+                <Typography variant="caption" display="block">
+                  Added {new Date(repo.createdAt).toLocaleString()}
+                </Typography>
               </Box>
-              <Typography variant="caption" color="text.secondary" display="block" mt={1}>
-                Added {new Date(repo.createdAt).toLocaleString()}
-              </Typography>
+
             </CardContent>
             <CardActions sx={{ justifyContent: 'flex-end', px: 2, pb: 2 }}>
               <Button
                 size="small"
                 color="primary"
                 startIcon={<RefreshIcon />}
-                onClick={() => updateRepository(repo)}
+                onClick={() => updateRepository(repo.id)}
                 disabled={isLoading}
               >
                 Update info
