@@ -8,6 +8,7 @@ import { DeleteRepositoryCommand } from '../../handlers/repository/commands/dele
 import { GetRepositoriesByUserIdQuery } from '../../handlers/repository/queries/getRepositoriesByUserIdQuery';
 import { GetRepositoryInfoFromGitHubQuery } from '../../handlers/repository/queries/getRepositoryInfoFromGitHubQuery';
 import { InvalidProjectPathError } from '../../errors/InvalidProjectPathError';
+import { GetRepositoryByIdAndUserIdQuery } from '../../handlers/repository/queries/getRepositoryByIdAndUserIdQuery';
 
 @injectable()
 export class RepositoryController {
@@ -17,6 +18,7 @@ export class RepositoryController {
     @inject('DeleteRepositoryCommand') private readonly deleteRepositoryCommand: DeleteRepositoryCommand,
     @inject('GetRepositoriesByUserIdQuery') private readonly getRepositoriesByUserIdQuery: GetRepositoriesByUserIdQuery,
     @inject('GetRepositoryInfoFromGitHubQuery') private readonly getRepositoryInfoFromGitHubQuery: GetRepositoryInfoFromGitHubQuery,
+    @inject('GetRepositoryByIdAndUserIdQuery') private readonly getRepositoryByIdAndUserIdQuery: GetRepositoryByIdAndUserIdQuery,
   ) {}
 
   async addRepository(req: Request, res: Response, next: NextFunction) {
@@ -32,7 +34,7 @@ export class RepositoryController {
         userId,
         projectPath: data.path
       });
-      
+
       return res.status(201).send();
 
     } catch (error) {
@@ -53,7 +55,13 @@ export class RepositoryController {
         return res.status(401).json({ error: 'User not authenticated' });
       }
 
-      const repoInfo = await this.getRepositoryInfoFromGitHubQuery.execute(data.path);
+      const repository = await this.getRepositoryByIdAndUserIdQuery.execute({ id: data.id, userId });
+
+      if (!repository) {
+        return res.status(404).json({ error: 'Repository not found' });
+      }
+
+      const repoInfo = await this.getRepositoryInfoFromGitHubQuery.execute(repository.projectPath);
 
       await this.updateRepositoryCommand.execute({
         id: data.id,

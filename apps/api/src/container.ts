@@ -13,6 +13,10 @@ import { RepositoryController } from './http/controllers/repositoryController';
 import { GitHubService } from './services/githubService';
 import { UpdateRepositoryCommand } from './handlers/repository/commands/updateRepositoryCommand';
 import { DeleteRepositoryCommand } from './handlers/repository/commands/deleteRepositoryCommand';
+import { EventBus } from './events/eventBus';
+import { RepositoryCreatedListener } from './events/repositoryCreatedListener';
+import { GetRepositoryByIdAndUserIdQuery } from './handlers/repository/queries/getRepositoryByIdAndUserIdQuery';
+
 
 // Initialize TypeORM DataSource
 AppDataSource.initialize()
@@ -24,6 +28,8 @@ AppDataSource.initialize()
   });
 
 container.register<DataSource>('DataSource', { useValue: AppDataSource });
+
+container.register<EventBus>('EventBus', { useValue: new EventBus() });
 container.register<UserRepository>('UserRepository', {
   useClass: UserRepository,
 });
@@ -62,12 +68,19 @@ container.register<GitHubService>('GitHubService', {
   useClass: GitHubService,
 });
 
+container.register<GetRepositoryByIdAndUserIdQuery>('GetRepositoryByIdAndUserIdQuery', {
+  useClass: GetRepositoryByIdAndUserIdQuery,
+});
+
+container.register<RepositoryCreatedListener>('RepositoryCreatedListener', {
+  useClass: RepositoryCreatedListener,
+});
+
+container.resolve(RepositoryCreatedListener);
+
 container.register<RepositoryController>('RepositoryController', {
   useClass: RepositoryController,
 });
-
-//todo: Some solution to auto register all commands and queries
-
 
 
 export { container };
