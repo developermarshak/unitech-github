@@ -21,7 +21,6 @@ export class UpdateRepositoryCommand {
       throw new RepositoryNotFoundError();
     }
 
-    // Update repository fields
     repository.projectPath = data.repoInfo.projectPath;
     repository.stars = data.repoInfo.stars;
     repository.forks = data.repoInfo.forks;

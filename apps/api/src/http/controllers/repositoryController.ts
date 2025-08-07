@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { injectable, inject } from 'tsyringe';
 import { ValidationError } from '../../errors/ValidationError';
-import { createRepositoryRequestSchema, updateRepositoryRequestSchema } from '@repo/contracts';
+import { createRepositoryRequestSchema, updateRepositoryRequestSchema, getRepositoriesResponseSchema, GetRepositoriesResponse } from '@repo/contracts';
 import { CreateRepositoryCommand } from '../../handlers/repository/commands/createRepositoryCommand';
 import { UpdateRepositoryCommand } from '../../handlers/repository/commands/updateRepositoryCommand';
+import { DeleteRepositoryCommand } from '../../handlers/repository/commands/deleteRepositoryCommand';
 import { GetRepositoriesByUserIdQuery } from '../../handlers/repository/queries/getRepositoriesByUserIdQuery';
 import { GetRepositoryInfoFromGitHubQuery } from '../../handlers/repository/queries/getRepositoryInfoFromGitHubQuery';
 import { InvalidProjectPathError } from '../../errors/InvalidProjectPathError';
@@ -13,6 +14,7 @@ export class RepositoryController {
   constructor(
     @inject('CreateRepositoryCommand') private readonly createRepositoryCommand: CreateRepositoryCommand,
     @inject('UpdateRepositoryCommand') private readonly updateRepositoryCommand: UpdateRepositoryCommand,
+    @inject('DeleteRepositoryCommand') private readonly deleteRepositoryCommand: DeleteRepositoryCommand,
     @inject('GetRepositoriesByUserIdQuery') private readonly getRepositoriesByUserIdQuery: GetRepositoriesByUserIdQuery,
     @inject('GetRepositoryInfoFromGitHubQuery') private readonly getRepositoryInfoFromGitHubQuery: GetRepositoryInfoFromGitHubQuery,
   ) {}
@@ -26,12 +28,12 @@ export class RepositoryController {
         return res.status(401).json({ error: 'User not authenticated' });
       }
 
-      const repoInfo = await this.getRepositoryInfoFromGitHubQuery.execute(data.path);
-
       await this.createRepositoryCommand.execute({
         userId,
-        repoInfo,
+        projectPath: data.path
       });
+      
+      return res.status(201).send();
 
     } catch (error) {
       if (error instanceof InvalidProjectPathError) {
@@ -58,6 +60,23 @@ export class RepositoryController {
         userId,
         repoInfo: repoInfo,
       });
+
+      return res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteRepository(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+
+      await this.deleteRepositoryCommand.execute({ id, userId });
+      res.status(204).send();
     } catch (error) {
       next(error);
     }
@@ -70,7 +89,19 @@ export class RepositoryController {
         return res.status(401).json({ error: 'User not authenticated' });
       }
       
-      const repositories = await this.getRepositoriesByUserIdQuery.execute(userId);
+      const repoEntities = await this.getRepositoriesByUserIdQuery.execute(userId);
+
+      const repositories: GetRepositoriesResponse = getRepositoriesResponseSchema.parse(
+        repoEntities.map(({ id, projectPath, stars, forks, issues, notExist, createdAt }) => ({
+          id,
+          projectPath,
+          stars,
+          forks,
+          issues,
+          notExist,
+          createdAt: createdAt.toISOString(),
+        }))
+      );
       
       res.status(200).json(repositories);
     } catch (error) {

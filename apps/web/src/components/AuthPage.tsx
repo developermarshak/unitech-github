@@ -1,3 +1,4 @@
+import { apiClient } from '@repo/api-client';
 import React, { useState } from 'react';
 import {
   Box,
@@ -22,7 +23,7 @@ import {
 } from '@mui/icons-material';
 
 interface AuthPageProps {
-  onSuccess?: () => void;
+  onSuccess?: (accessToken: string) => void;
 }
 
 export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
@@ -42,8 +43,8 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     setFormData(prev => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+    if (errors[field] || errors.form) {
+      setErrors(prev => ({ ...prev, [field]: '', form: '' }));
     }
   };
 
@@ -80,15 +81,27 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
     setIsLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      console.log(isSignUp ? 'Sign up data:' : 'Sign in data:', formData);
-      
-      if (onSuccess) {
-        onSuccess();
+      if (isSignUp) {
+        await apiClient.signup({
+          email: formData.email,
+          password: formData.password,
+        });
+        // Optionally, switch to sign-in mode after successful sign-up
+        toggleMode();
+      } else {
+        const { accessToken } = await apiClient.signin({
+          email: formData.email,
+          password: formData.password,
+        });
+        console.log('Signed in successfully, token:', accessToken);
+        localStorage.setItem('accessToken', accessToken);
       }
-    } catch (error) {
+      
+      if (onSuccess && !isSignUp) {
+        onSuccess(localStorage.getItem('accessToken') as string);
+      }
+    } catch (error: any) {
+      setErrors(prev => ({ ...prev, form: error.message || 'An unexpected error occurred' }));
       console.error('Auth error:', error);
     } finally {
       setIsLoading(false);
@@ -103,6 +116,9 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
       agreeToTerms: false,
     });
     setErrors({});
+    if (errors.form) {
+      setErrors(prev => ({...prev, form: ''}));
+    }
   };
 
   return (
@@ -222,6 +238,12 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
               {errors.agreeToTerms && (
                 <Alert severity="error" sx={{ mb: 2 }}>
                   {errors.agreeToTerms}
+                </Alert>
+              )}
+
+              {errors.form && (
+                <Alert severity="error" sx={{ mb: 2 }}>
+                  {errors.form}
                 </Alert>
               )}
 

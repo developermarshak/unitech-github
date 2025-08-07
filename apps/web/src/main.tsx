@@ -1,8 +1,13 @@
+import { configureApiClient } from "@repo/api-client";
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { AuthPage } from "./components";
+import { AuthPage, RepositoryPage } from "./components";
+
+configureApiClient({
+  baseUrl: import.meta.env.VITE_API_URL || "/api",
+});
 
 const theme = createTheme({
   palette: {
@@ -44,23 +49,18 @@ const theme = createTheme({
 });
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [accessToken, setAccessToken] = useState<string | null>(() => localStorage.getItem("accessToken"));
 
-  const handleAuthSuccess = () => {
-    setIsAuthenticated(true);
+  const handleAuthSuccess = (token: string) => {
+    setAccessToken(token);
     console.log("User authenticated successfully!");
   };
 
-  if (!isAuthenticated) {
+  if (!accessToken) {
     return <AuthPage onSuccess={handleAuthSuccess} />;
   }
 
-  return (
-    <div>
-      <h1>Welcome to your dashboard!</h1>
-      <p>You are now logged in.</p>
-    </div>
-  );
+  return <RepositoryPage accessToken={accessToken} />;
 };
 
 createRoot(document.getElementById("app")!).render(

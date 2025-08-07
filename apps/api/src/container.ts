@@ -12,6 +12,7 @@ import { GetRepositoryInfoFromGitHubQuery } from './handlers/repository/queries/
 import { RepositoryController } from './http/controllers/repositoryController';
 import { GitHubService } from './services/githubService';
 import { UpdateRepositoryCommand } from './handlers/repository/commands/updateRepositoryCommand';
+import { DeleteRepositoryCommand } from './handlers/repository/commands/deleteRepositoryCommand';
 
 // Initialize TypeORM DataSource
 AppDataSource.initialize()
@@ -43,6 +44,10 @@ container.register<CreateRepositoryCommand>('CreateRepositoryCommand', {
 
 container.register<UpdateRepositoryCommand>('UpdateRepositoryCommand', {
   useClass: UpdateRepositoryCommand,
+});
+
+container.register<DeleteRepositoryCommand>('DeleteRepositoryCommand', {
+  useClass: DeleteRepositoryCommand,
 });
 
 container.register<GetRepositoriesByUserIdQuery>('GetRepositoriesByUserIdQuery', {

@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import { User } from '../entities/User.js';
 import dotenv from 'dotenv';
-
+import { Repository } from '../entities/Repository.js';
 dotenv.config(); //todo: use sep config class
 
 export const AppDataSource = new DataSource({
@@ -13,6 +13,6 @@ export const AppDataSource = new DataSource({
   database: process.env.DATABASE_NAME,
   synchronize: process.env.NODE_ENV === 'development',
   logging: process.env.NODE_ENV === 'development',
-  entities: [User],
+  entities: [User, Repository],
   migrations: ['src/migrations/*.ts']
 });

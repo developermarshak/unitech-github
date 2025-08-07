@@ -1,26 +1,24 @@
 import { inject, injectable } from 'tsyringe';
-import { ulid } from 'ulid';
 import { DataSource, Repository } from 'typeorm';
 import { Repository as RepositoryEntity } from '../../../entities/Repository';
+import { RepositoryNotFoundError } from '../../../errors/RepositoryNotFoundError';
 
 @injectable()
-export class CreateRepositoryCommand {
+export class DeleteRepositoryCommand {
   private repositoryRepository: Repository<RepositoryEntity>;
 
   constructor(@inject('DataSource') private readonly dataSource: DataSource) {
     this.repositoryRepository = this.dataSource.getRepository(RepositoryEntity);
   }
 
-  async execute(data: { userId: string; projectPath: string }) {
-    const id = ulid();
-    const repository = this.repositoryRepository.create({
-      id,
+  async execute(data: { id: string; userId: string }): Promise<void> {
+    const result = await this.repositoryRepository.delete({
+      id: data.id,
       userId: data.userId,
-      projectPath: data.projectPath,
     });
 
-    await this.repositoryRepository.save(repository);
-
-    
+    if (result.affected === 0) {
+      throw new RepositoryNotFoundError();
+    }
   }
-} 
+}
