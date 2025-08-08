@@ -10,7 +10,7 @@ interface UseAuthReturn {
 /**
  * Centralised authentication hook.
  *
- * Persists the JWT in localStorage, it's not secure, but it's ok for a demo. 
+ * Persists the JWT in localStorage, it's not secure, but it's ok for a demo.
  * In a real app, I would use a cookie and pair access token with a refresh token.
  */
 export const useAuth = (): UseAuthReturn => {

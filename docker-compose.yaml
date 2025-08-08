@@ -1,0 +1,55 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: devops/api/Dockerfile
+    image: unitech-github-api:latest
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_NAME: app
+      # Optionally pass keys via env to override file-based keys
+      # JWT_PUBLIC_KEY: ""
+      # JWT_SECRET_KEY: ""
+    volumes:
+      - api-keys:/app/.keys
+    depends_on:
+      - db
+    networks:
+      - appnet
+
+  web:
+    build:
+      context: .
+      dockerfile: devops/web/Dockerfile
+    image: unitech-github-web:latest
+    depends_on:
+      - api
+    ports:
+      - "8080:80"
+    networks:
+      - appnet
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - appnet
+
+volumes:
+  api-keys:
+  db-data:
+
+networks:
+  appnet:
+    driver: bridge
+

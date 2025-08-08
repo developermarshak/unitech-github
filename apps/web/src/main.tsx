@@ -81,5 +81,5 @@ createRoot(document.getElementById("app")!).render(
   <ThemeProvider theme={theme}>
     <CssBaseline />
     <App />
-  </ThemeProvider>
+  </ThemeProvider>,
 );

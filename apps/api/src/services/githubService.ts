@@ -1,6 +1,6 @@
-import { injectable } from 'tsyringe';
-import { Octokit } from '@octokit/rest';
-import { InvalidProjectPathError } from '../errors/InvalidProjectPathError';
+import { injectable } from "tsyringe";
+import { Octokit } from "@octokit/rest";
+import { InvalidProjectPathError } from "../errors/InvalidProjectPathError.js";
 
 export interface GitHubRepositoryInfo {
   projectPath: string;
@@ -23,15 +23,15 @@ export class GitHubService {
 
   async getRepositoryInfo(projectPath: string): Promise<GitHubRepositoryInfo> {
     try {
-      const [owner, repo] = projectPath.split('/');
-      
+      const [owner, repo] = projectPath.split("/");
+
       if (!owner || !repo) {
-        throw new InvalidProjectPathError('Invalid project path');
+        throw new InvalidProjectPathError("Invalid project path");
       }
 
       const { data } = await this.octokit.repos.get({
         owner,
-        repo
+        repo,
       });
 
       return {
@@ -39,20 +39,20 @@ export class GitHubService {
         stars: data.stargazers_count || null,
         forks: data.forks_count || null,
         issues: data.open_issues_count || null,
-        notExist: false
+        notExist: false,
       };
-    } catch (error: any) {      
+    } catch (error: any) {
       if (error.status === 404) {
         return {
           projectPath,
           stars: null,
           forks: null,
           issues: null,
-          notExist: true
+          notExist: true,
         };
       }
-      
+
       throw error;
     }
   }
-} 
+}

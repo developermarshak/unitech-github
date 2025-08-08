@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -8,16 +8,16 @@ import {
   Container,
   TextField,
   Typography,
-} from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
-import RefreshIcon from '@mui/icons-material/Refresh';
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
-import { useRepositories } from '../hooks/useRepositories';
-import { RepositorySchema } from '../hooks/useRepositories';
+import { useRepositories } from "../hooks/useRepositories";
+import { RepositorySchema } from "../hooks/useRepositories";
 
 export const RepositoryPage: React.FC = () => {
-  const [repoInput, setRepoInput] = useState('');
+  const [repoInput, setRepoInput] = useState("");
 
   const {
     repositories,
@@ -32,7 +32,7 @@ export const RepositoryPage: React.FC = () => {
     e.preventDefault();
     await addRepository(repoInput);
     if (!errors) {
-      setRepoInput('');
+      setRepoInput("");
     }
   };
 
@@ -57,7 +57,7 @@ export const RepositoryPage: React.FC = () => {
               variant="contained"
               fullWidth
               startIcon={<AddIcon />}
-              sx={{ height: '56px' }}
+              sx={{ height: "56px" }}
               disabled={isLoading}
             >
               Add
@@ -81,14 +81,20 @@ export const RepositoryPage: React.FC = () => {
                 {repo.projectPath}
               </Typography>
               <Box mt={1}>
-                {typeof repo.stars === 'number' && (
-                  <Typography variant="caption" display="block">Stars: {repo.stars}</Typography>
+                {typeof repo.stars === "number" && (
+                  <Typography variant="caption" display="block">
+                    Stars: {repo.stars}
+                  </Typography>
                 )}
-                {typeof repo.forks === 'number' && (
-                  <Typography variant="caption" display="block">Forks: {repo.forks}</Typography>
+                {typeof repo.forks === "number" && (
+                  <Typography variant="caption" display="block">
+                    Forks: {repo.forks}
+                  </Typography>
                 )}
-                {typeof repo.issues === 'number' && (
-                  <Typography variant="caption" display="block">Issues: {repo.issues}</Typography>
+                {typeof repo.issues === "number" && (
+                  <Typography variant="caption" display="block">
+                    Issues: {repo.issues}
+                  </Typography>
                 )}
                 {repo.notExist && (
                   <Typography variant="caption" color="error" display="block">
@@ -99,9 +105,8 @@ export const RepositoryPage: React.FC = () => {
                   Added {new Date(repo.createdAt).toLocaleString()}
                 </Typography>
               </Box>
-
             </CardContent>
-            <CardActions sx={{ justifyContent: 'flex-end', px: 2, pb: 2 }}>
+            <CardActions sx={{ justifyContent: "flex-end", px: 2, pb: 2 }}>
               <Button
                 size="small"
                 color="primary"

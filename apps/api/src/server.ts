@@ -1,13 +1,13 @@
-import 'reflect-metadata';
-import express from 'express';
-import cors from 'cors';
-import bodyParser from 'body-parser';
-import dotenv from 'dotenv';
+import "reflect-metadata";
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import dotenv from "dotenv";
 
-import routes from './http/routes';
-import { errorHandler } from './http/middlewares/errorHandler';
+import routes from "./http/routes/index.js";
+import { errorHandler } from "./http/middlewares/errorHandler.js";
 
-import './container';
+import "./container.js";
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ export function createApp(): express.Application {
   app.use(cors());
   app.use(bodyParser.json());
 
-  app.use('/api', routes);
+  app.use("/api", routes);
 
   // Error handling middleware should be last
   app.use(errorHandler);

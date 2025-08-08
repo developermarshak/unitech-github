@@ -1,5 +1,5 @@
-import { useAuthForm } from '../hooks/useAuthForm';
-import React, { useState } from 'react';
+import { useAuthForm } from "../hooks/useAuthForm";
+import React, { useState } from "react";
 import {
   Box,
   Card,
@@ -12,11 +12,8 @@ import {
   Alert,
   InputAdornment,
   IconButton,
-} from '@mui/material';
-import {
-  Visibility,
-  VisibilityOff,
-} from '@mui/icons-material';
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 interface AuthPageProps {
   onSuccess?: (accessToken: string) => void;
@@ -39,10 +36,10 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
     <Container component="main" maxWidth="sm">
       <Box
         sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
           py: 4,
         }}
       >
@@ -50,26 +47,30 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
           elevation={3}
           sx={{
             borderRadius: 2,
-            overflow: 'hidden',
+            overflow: "hidden",
           }}
         >
           <CardContent sx={{ p: 4 }}>
             <Box
               sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
                 mb: 3,
               }}
             >
               <Typography component="h1" variant="h4" fontWeight="bold">
-                {isSignUp ? 'Sign up' : 'Welcome Back'}
+                {isSignUp ? "Sign up" : "Welcome Back"}
               </Typography>
-              <Typography variant="body2" color="text.secondary" textAlign="center" mt={1}>
-                {isSignUp 
-                  ? 'Join us today and start your journey'
-                  : 'Sign in to your account to continue'
-                }
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                textAlign="center"
+                mt={1}
+              >
+                {isSignUp
+                  ? "Join us today and start your journey"
+                  : "Sign in to your account to continue"}
               </Typography>
             </Box>
 
@@ -80,7 +81,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
                 label="Email Address"
                 type="email"
                 value={formData.email}
-                onChange={handleInputChange('email')}
+                onChange={handleInputChange("email")}
                 error={!!errors.email}
                 helperText={errors.email}
                 disabled={isLoading}
@@ -91,9 +92,9 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
                 required
                 fullWidth
                 label="Password"
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 value={formData.password}
-                onChange={handleInputChange('password')}
+                onChange={handleInputChange("password")}
                 error={!!errors.password}
                 helperText={errors.password}
                 disabled={isLoading}
@@ -127,28 +128,33 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
                   mt: 2,
                   mb: 2,
                   py: 1.5,
-                  fontSize: '1rem',
-                  fontWeight: 'bold',
+                  fontSize: "1rem",
+                  fontWeight: "bold",
                 }}
               >
-                {isLoading 
-                  ? (isSignUp ? 'Signing up...' : 'Signing In...') 
-                  : (isSignUp ? 'Sign up' : 'Sign In')
-                }
+                {isLoading
+                  ? isSignUp
+                    ? "Signing up..."
+                    : "Signing In..."
+                  : isSignUp
+                    ? "Sign up"
+                    : "Sign In"}
               </Button>
 
-              <Box sx={{ textAlign: 'center' }}>
+              <Box sx={{ textAlign: "center" }}>
                 <Typography variant="body2" color="text.secondary">
-                  {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
+                  {isSignUp
+                    ? "Already have an account?"
+                    : "Don't have an account?"}{" "}
                   <Link
                     component="button"
                     type="button"
                     variant="body2"
                     onClick={toggleMode}
                     underline="hover"
-                    sx={{ fontWeight: 'bold' }}
+                    sx={{ fontWeight: "bold" }}
                   >
-                    {isSignUp ? 'Sign In' : 'Sign Up'}
+                    {isSignUp ? "Sign In" : "Sign Up"}
                   </Link>
                 </Typography>
               </Box>

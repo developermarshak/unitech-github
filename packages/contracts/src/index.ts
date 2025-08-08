@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 /**
  * Validation schema and inferred-type for POST /users
@@ -22,17 +22,23 @@ export type CreateSessionRequest = z.infer<typeof createSessionRequestSchema>;
  * Validation schema and inferred-type for POST /repositories
  */
 export const createRepositoryRequestSchema = z.object({
-  path: z.string().regex(/^[^\/]+\/[^\/]+$/, 'Path must be in format owner/repo'),
+  path: z
+    .string()
+    .regex(/^[^\/]+\/[^\/]+$/, "Path must be in format owner/repo"),
 });
-export type CreateRepositoryRequest = z.infer<typeof createRepositoryRequestSchema>;
+export type CreateRepositoryRequest = z.infer<
+  typeof createRepositoryRequestSchema
+>;
 
 /**
  * Validation schema and inferred-type for PUT /repositories
  */
 export const updateRepositoryRequestSchema = z.object({
-  id: z.string()
+  id: z.string(),
 });
-export type UpdateRepositoryRequest = z.infer<typeof updateRepositoryRequestSchema>;
+export type UpdateRepositoryRequest = z.infer<
+  typeof updateRepositoryRequestSchema
+>;
 
 /**
  * Response schema for a single Repository item
@@ -52,4 +58,6 @@ export type RepositoryResponse = z.infer<typeof repositoryResponseSchema>;
  * Response schema for GET /repositories
  */
 export const getRepositoriesResponseSchema = z.array(repositoryResponseSchema);
-export type GetRepositoriesResponse = z.infer<typeof getRepositoriesResponseSchema>;
+export type GetRepositoriesResponse = z.infer<
+  typeof getRepositoriesResponseSchema
+>;

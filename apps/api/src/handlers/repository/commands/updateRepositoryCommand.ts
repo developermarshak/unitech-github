@@ -1,20 +1,24 @@
-import { inject, injectable } from 'tsyringe';
-import { DataSource, Repository } from 'typeorm';
-import { Repository as RepositoryEntity } from '../../../entities/Repository';
-import { GitHubRepositoryInfo } from '../../../services/githubService';
-import { RepositoryNotFoundError } from '../../../errors/RepositoryNotFoundError';
+import { inject, injectable } from "tsyringe";
+import { DataSource, Repository } from "typeorm";
+import { Repository as RepositoryEntity } from "../../../entities/Repository.js";
+import { GitHubRepositoryInfo } from "../../../services/githubService.js";
+import { RepositoryNotFoundError } from "../../../errors/RepositoryNotFoundError.js";
 
 @injectable()
 export class UpdateRepositoryCommand {
   private repositoryRepository: Repository<RepositoryEntity>;
 
-  constructor(@inject('DataSource') private readonly dataSource: DataSource) {
+  constructor(@inject("DataSource") private readonly dataSource: DataSource) {
     this.repositoryRepository = this.dataSource.getRepository(RepositoryEntity);
   }
 
-  async execute(data: { id: string; userId: string; repoInfo: GitHubRepositoryInfo }): Promise<void> {
+  async execute(data: {
+    id: string;
+    userId: string;
+    repoInfo: GitHubRepositoryInfo;
+  }): Promise<void> {
     const repository = await this.repositoryRepository.findOne({
-      where: { id: data.id, userId: data.userId }
+      where: { id: data.id, userId: data.userId },
     });
 
     if (!repository) {
@@ -29,4 +33,4 @@ export class UpdateRepositoryCommand {
 
     await this.repositoryRepository.save(repository);
   }
-} 
+}

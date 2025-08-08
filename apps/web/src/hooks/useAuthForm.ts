@@ -47,7 +47,9 @@ export const useAuthForm = (
   const handleInputChange = useCallback(
     (field: keyof FormData) => (event: ChangeEvent<HTMLInputElement>) => {
       const value =
-        event.target.type === "checkbox" ? event.target.checked : event.target.value;
+        event.target.type === "checkbox"
+          ? event.target.checked
+          : event.target.value;
       setFormData((prev) => ({ ...prev, [field]: value }));
       // Clear error when user starts typing
       if (errors[field] || errors.form) {
@@ -71,8 +73,6 @@ export const useAuthForm = (
     } else if (formData.password.length < 8) {
       newErrors.password = "Password must be at least 8 characters";
     }
-
-
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;

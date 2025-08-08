@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from "node:events";
 
 /**
  * Simple event bus based on Node.js EventEmitter.

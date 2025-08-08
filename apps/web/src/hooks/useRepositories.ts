@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
-import { apiClient } from '@repo/api-client';
+import { useCallback, useEffect, useState } from "react";
+import { apiClient } from "@repo/api-client";
 import {
   RepositoryResponse,
   CreateRepositoryRequest,
   UpdateRepositoryRequest,
-} from '@repo/contracts';
+} from "@repo/contracts";
 
 interface UseRepositoriesReturn {
   repositories: RepositorySchema[];
@@ -17,17 +17,17 @@ interface UseRepositoriesReturn {
 }
 
 export interface RepositorySchema {
-    id: string;
-    projectPath: string;
-    owner: string;
-    name: string;
-    updating: boolean;
-    createdAt: string;
-    url: string | null;
-    stars: number | null;
-    forks: number | null;
-    issues: number | null;
-    notExist: boolean | null;
+  id: string;
+  projectPath: string;
+  owner: string;
+  name: string;
+  updating: boolean;
+  createdAt: string;
+  url: string | null;
+  stars: number | null;
+  forks: number | null;
+  issues: number | null;
+  notExist: boolean | null;
 }
 
 export const useRepositories = (): UseRepositoriesReturn => {
@@ -39,14 +39,18 @@ export const useRepositories = (): UseRepositoriesReturn => {
   const transformRepository = (repo: RepositoryResponse): RepositorySchema => {
     const url = repo.notExist ? null : `https://github.com/${repo.projectPath}`;
 
-    const [owner, name] = repo.projectPath.split('/');
+    const [owner, name] = repo.projectPath.split("/");
 
     return {
       id: repo.id,
       projectPath: repo.projectPath,
       owner: owner,
       name: name,
-      updating: repo.stars === null && repo.forks === null && repo.issues === null && repo.notExist === null,
+      updating:
+        repo.stars === null &&
+        repo.forks === null &&
+        repo.issues === null &&
+        repo.notExist === null,
       createdAt: repo.createdAt,
       url: url,
       stars: repo.stars,
@@ -63,9 +67,9 @@ export const useRepositories = (): UseRepositoriesReturn => {
       const transformedRepositories = data.map(transformRepository);
 
       setRepositories(transformedRepositories);
-      setIsUpdating(transformedRepositories.some(r => r.updating));
+      setIsUpdating(transformedRepositories.some((r) => r.updating));
     } catch (err: any) {
-      setErrors(err.message || 'Failed to load repositories');
+      setErrors(err.message || "Failed to load repositories");
     }
   }, []);
 
@@ -77,16 +81,16 @@ export const useRepositories = (): UseRepositoriesReturn => {
     const trimmed = path.trim();
 
     if (!trimmed) {
-      setErrors('Repository path is required');
+      setErrors("Repository path is required");
       return;
     }
 
     if (
       repositories.some(
-        (r) => r.projectPath.toLowerCase() === trimmed.toLowerCase()
+        (r) => r.projectPath.toLowerCase() === trimmed.toLowerCase(),
       )
     ) {
-      setErrors('Repository already added');
+      setErrors("Repository already added");
       return;
     }
 
@@ -97,7 +101,7 @@ export const useRepositories = (): UseRepositoriesReturn => {
       await fetchRepositories();
       setErrors(null);
     } catch (err: any) {
-      setErrors(err.message || 'Failed to add repository');
+      setErrors(err.message || "Failed to add repository");
     } finally {
       setIsLoading(false);
     }
@@ -110,7 +114,7 @@ export const useRepositories = (): UseRepositoriesReturn => {
       await apiClient.updateRepository(payload);
       await fetchRepositories();
     } catch (err: any) {
-      setErrors(err.message || 'Failed to update repository');
+      setErrors(err.message || "Failed to update repository");
     } finally {
       setIsLoading(false);
     }
@@ -122,7 +126,7 @@ export const useRepositories = (): UseRepositoriesReturn => {
       await apiClient.deleteRepository(repoId);
       await fetchRepositories();
     } catch (err: any) {
-      setErrors(err.message || 'Failed to remove repository');
+      setErrors(err.message || "Failed to remove repository");
     } finally {
       setIsLoading(false);
     }
@@ -135,6 +139,7 @@ export const useRepositories = (): UseRepositoriesReturn => {
       }, 1000);
       return () => clearInterval(interval);
     }
+    return undefined;
   }, [isUpdating, fetchRepositories]);
 
   return {

@@ -14,9 +14,11 @@ This is the API server for the Unitech application, built with Express.js, TypeS
 ## Endpoints
 
 ### POST /api/users
+
 Creates a new user account.
 
 **Request Body:**
+
 ```json
 {
   "email": "user@example.com",
@@ -25,14 +27,17 @@ Creates a new user account.
 ```
 
 **Response:**
+
 - `201` - User created successfully
 - `400` - Invalid request data
 - `409` - User already exists
 
 ### POST /api/users/session
+
 Creates a new session (login).
 
 **Request Body:**
+
 ```json
 {
   "email": "user@example.com",
@@ -41,6 +46,7 @@ Creates a new session (login).
 ```
 
 **Response:**
+
 - `200` - Session created successfully
   ```json
   {
@@ -51,14 +57,17 @@ Creates a new session (login).
 - `401` - Authentication failed
 
 ### POST /api/repositories
+
 Adds a new repository (requires authentication).
 
 **Headers:**
+
 ```
 Authorization: Bearer <jwt-token>
 ```
 
 **Request Body:**
+
 ```json
 {
   "name": "my-repository",
@@ -67,6 +76,7 @@ Authorization: Bearer <jwt-token>
 ```
 
 **Response:**
+
 - `201` - Repository added successfully
 - `400` - Invalid request data
 - `401` - Authentication failed (missing or invalid token)
@@ -111,16 +121,19 @@ curl -X POST http://localhost:3000/api/repositories \
 ### Setup
 
 1. Install dependencies:
+
    ```bash
    pnpm install
    ```
 
 2. Generate JWT keys:
+
    ```bash
    pnpm run generate:jwt-keys
    ```
 
 3. Set up environment variables (create `.env` file):
+
    ```
    DATABASE_URL=postgresql://username:password@localhost:5432/database_name
    JWT_PUBLIC_KEY=your-public-key
@@ -135,11 +148,13 @@ curl -X POST http://localhost:3000/api/repositories \
 ### Running the Server
 
 Development mode:
+
 ```bash
 pnpm dev
 ```
 
 Production build:
+
 ```bash
 pnpm build
 pnpm start
@@ -152,11 +167,13 @@ The API includes comprehensive functional tests for the user endpoints.
 ### Running Tests
 
 Run all tests:
+
 ```bash
 pnpm test
 ```
 
 Run tests in watch mode:
+
 ```bash
 pnpm test:watch
 ```
@@ -172,6 +189,7 @@ pnpm test:watch
 The tests cover:
 
 **Create User Endpoint (`POST /api/users`):**
+
 - ✅ Valid user creation
 - ✅ Email validation (format, required)
 - ✅ Password validation (length, required)
@@ -179,6 +197,7 @@ The tests cover:
 - ✅ Error handling
 
 **Create Session Endpoint (`POST /api/users/session`):**
+
 - ✅ Valid session creation
 - ✅ Email validation (format, required)
 - ✅ Password validation (length, required)
@@ -186,6 +205,7 @@ The tests cover:
 - ✅ Error handling
 
 **Integration Tests:**
+
 - ✅ User creation followed by session creation
 - ✅ End-to-end workflow validation
 
@@ -195,4 +215,4 @@ The tests cover:
 - **Supertest** - HTTP testing
 - **ts-jest** - TypeScript support for Jest
 
-The tests use mocking to isolate the HTTP layer from the database and external dependencies, ensuring fast and reliable test execution. 
+The tests use mocking to isolate the HTTP layer from the database and external dependencies, ensuring fast and reliable test execution.

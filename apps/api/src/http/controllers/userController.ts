@@ -1,13 +1,13 @@
-import { Request, Response, NextFunction } from 'express';
-import { inject, injectable } from 'tsyringe';
-import { ZodError } from 'zod';
-import { CreateUserCommand } from '../../handlers/user/commands/createUserCommand';
-import { CreateSessionUserCommand } from '../../handlers/user/commands/createSessionUserCommand';
-import { ValidationError } from '../../errors/ValidationError';
+import { Request, Response, NextFunction } from "express";
+import { inject, injectable } from "tsyringe";
+import { ZodError } from "zod";
+import { CreateUserCommand } from "../../handlers/user/commands/createUserCommand.js";
+import { CreateSessionUserCommand } from "../../handlers/user/commands/createSessionUserCommand.js";
+import { ValidationError } from "../../errors/ValidationError.js";
 import {
   createUserRequestSchema,
   createSessionRequestSchema,
-} from '@repo/contracts';
+} from "@repo/contracts";
 
 @injectable()
 export class UserController {
@@ -26,7 +26,7 @@ export class UserController {
       res.status(201).send();
     } catch (error) {
       if (error instanceof ZodError) {
-        return next(new ValidationError('Invalid request data', error.errors));
+        return next(new ValidationError("Invalid request data", error.errors));
       }
       next(error);
     }
@@ -39,7 +39,7 @@ export class UserController {
       res.json({ accessToken });
     } catch (error) {
       if (error instanceof ZodError) {
-        return next(new ValidationError('Invalid request data', error.errors));
+        return next(new ValidationError("Invalid request data", error.errors));
       }
       next(error);
     }

@@ -1,16 +1,16 @@
-import { inject, injectable } from 'tsyringe';
-import { ulid } from 'ulid';
-import { DataSource, Repository } from 'typeorm';
-import { Repository as RepositoryEntity } from '../../../entities/Repository';
-import { EventBus } from '../../../events/eventBus';
+import { inject, injectable } from "tsyringe";
+import { ulid } from "ulid";
+import { DataSource, Repository } from "typeorm";
+import { Repository as RepositoryEntity } from "../../../entities/Repository.js";
+import { EventBus } from "../../../events/eventBus.js";
 
 @injectable()
 export class CreateRepositoryCommand {
   private repositoryRepository: Repository<RepositoryEntity>;
-  
+
   constructor(
-    @inject('DataSource') private readonly dataSource: DataSource,
-    @inject('EventBus') private readonly eventBus: EventBus,
+    @inject("DataSource") private readonly dataSource: DataSource,
+    @inject("EventBus") private readonly eventBus: EventBus,
   ) {
     this.repositoryRepository = this.dataSource.getRepository(RepositoryEntity);
   }
@@ -25,10 +25,10 @@ export class CreateRepositoryCommand {
 
     await this.repositoryRepository.save(repository);
 
-    this.eventBus.emit('repository.created', {
+    this.eventBus.emit("repository.created", {
       id,
       userId: data.userId,
       projectPath: data.projectPath,
     });
   }
-} 
+}

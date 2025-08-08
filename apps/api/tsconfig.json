@@ -1,14 +1,15 @@
 {
   "extends": "../../packages/typescript-config/base.json",
+  "include": ["src"],
+  "references": [{ "path": "../../packages/contracts" }],
   "compilerOptions": {
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "outDir": "dist",
-    "paths": {
-      "@repo/contracts": ["../../packages/contracts/src"]
-    }
-  },
-  "include": ["src"],
-  "exclude": ["node_modules"]
+    "rootDir": "src",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022"
+  }
 }

@@ -1,13 +1,13 @@
-import { inject, injectable } from 'tsyringe';
-import { DataSource, Repository } from 'typeorm';
-import { Repository as RepositoryEntity } from '../../../entities/Repository';
-import { RepositoryNotFoundError } from '../../../errors/RepositoryNotFoundError';
+import { inject, injectable } from "tsyringe";
+import { DataSource, Repository } from "typeorm";
+import { Repository as RepositoryEntity } from "../../../entities/Repository.js";
+import { RepositoryNotFoundError } from "../../../errors/RepositoryNotFoundError.js";
 
 @injectable()
 export class DeleteRepositoryCommand {
   private repositoryRepository: Repository<RepositoryEntity>;
 
-  constructor(@inject('DataSource') private readonly dataSource: DataSource) {
+  constructor(@inject("DataSource") private readonly dataSource: DataSource) {
     this.repositoryRepository = this.dataSource.getRepository(RepositoryEntity);
   }
 
