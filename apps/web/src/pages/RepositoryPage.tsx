@@ -6,6 +6,7 @@ import {
   CardActions,
   CardContent,
   Container,
+  Link,
   TextField,
   Typography,
 } from "@mui/material";
@@ -30,8 +31,8 @@ export const RepositoryPage: React.FC = () => {
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    await addRepository(repoInput);
-    if (!errors) {
+    const result = await addRepository(repoInput);
+    if (result === "success") {
       setRepoInput("");
     }
   };
@@ -81,6 +82,24 @@ export const RepositoryPage: React.FC = () => {
                 {repo.projectPath}
               </Typography>
               <Box mt={1}>
+                {repo.url && (
+                  <Typography variant="caption" display="block">
+                    URL: {" "}
+                    <Link href={repo.url} target="_blank" rel="noopener noreferrer">
+                      {repo.url}
+                    </Link>
+                  </Typography>
+                )}
+                {repo.owner && (
+                  <Typography variant="caption" display="block">
+                    Owner: {repo.owner}
+                  </Typography>
+                )}
+                {repo.name && (
+                  <Typography variant="caption" display="block">
+                    Name: {repo.name}
+                  </Typography>
+                )}
                 {typeof repo.stars === "number" && (
                   <Typography variant="caption" display="block">
                     Stars: {repo.stars}
@@ -94,6 +113,11 @@ export const RepositoryPage: React.FC = () => {
                 {typeof repo.issues === "number" && (
                   <Typography variant="caption" display="block">
                     Issues: {repo.issues}
+                  </Typography>
+                )}
+                {repo.updating && (
+                  <Typography variant="caption" color="info" display="block">
+                    Updating...
                   </Typography>
                 )}
                 {repo.notExist && (

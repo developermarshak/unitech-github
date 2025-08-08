@@ -10,7 +10,7 @@ interface UseRepositoriesReturn {
   repositories: RepositorySchema[];
   errors: string | null;
   isLoading: boolean;
-  addRepository: (path: string) => Promise<void>;
+  addRepository: (path: string) => Promise<"error" | "success">;
   updateRepository: (repoId: string) => Promise<void>;
   removeRepository: (repoId: string) => Promise<void>;
   refetch: () => Promise<void>;
@@ -77,12 +77,12 @@ export const useRepositories = (): UseRepositoriesReturn => {
     fetchRepositories();
   }, [fetchRepositories]);
 
-  const addRepository = async (path: string) => {
+  const addRepository = async (path: string): Promise<"error" | "success"> => {
     const trimmed = path.trim();
 
     if (!trimmed) {
       setErrors("Repository path is required");
-      return;
+      return "error";
     }
 
     if (
@@ -91,7 +91,7 @@ export const useRepositories = (): UseRepositoriesReturn => {
       )
     ) {
       setErrors("Repository already added");
-      return;
+      return "error";
     }
 
     setIsLoading(true);
@@ -100,23 +100,22 @@ export const useRepositories = (): UseRepositoriesReturn => {
       await apiClient.addRepository(payload);
       await fetchRepositories();
       setErrors(null);
+      return "success";
     } catch (err: any) {
       setErrors(err.message || "Failed to add repository");
+      return "error";
     } finally {
       setIsLoading(false);
     }
   };
 
   const updateRepository = async (repoId: string) => {
-    setIsLoading(true);
     try {
       const payload: UpdateRepositoryRequest = { id: repoId };
       await apiClient.updateRepository(payload);
       await fetchRepositories();
     } catch (err: any) {
       setErrors(err.message || "Failed to update repository");
-    } finally {
-      setIsLoading(false);
     }
   };
 
