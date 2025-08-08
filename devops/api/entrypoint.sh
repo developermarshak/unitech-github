@@ -15,6 +15,22 @@ if [ -z "${JWT_PUBLIC_KEY:-}" ] || [ -z "${JWT_SECRET_KEY:-}" ]; then
   fi
 fi
 
+# Wait for PostgreSQL to be ready before proceeding
+if [ -n "${DATABASE_HOST:-}" ] && [ -n "${DATABASE_PORT:-}" ]; then
+  echo "[api] Waiting for PostgreSQL at ${DATABASE_HOST}:${DATABASE_PORT}..."
+  for i in $(seq 1 60); do
+    if pg_isready -h "$DATABASE_HOST" -p "$DATABASE_PORT" >/dev/null 2>&1; then
+      echo "[api] PostgreSQL is ready."
+      break
+    fi
+    if [ "$i" -eq 60 ]; then
+      echo "[api] PostgreSQL did not become ready in time." >&2
+      exit 1
+    fi
+    sleep 1
+  done
+fi
+
 # run migrations
 node ./dist/scripts/migrate.js
 

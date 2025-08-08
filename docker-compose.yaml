@@ -18,7 +18,8 @@ services:
     volumes:
       - api-keys:/app/.keys
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - appnet
 
@@ -44,6 +45,11 @@ services:
       - db-data:/var/lib/postgresql/data
     networks:
       - appnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
 
 volumes:
   api-keys:

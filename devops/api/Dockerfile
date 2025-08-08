@@ -33,7 +33,8 @@ FROM node:${NODE_VERSION}-alpine AS runtime
 WORKDIR /app
 
 # Runtime needs openssl to generate RSA keys at startup
-RUN apk add --no-cache openssl
+# Also install postgresql-client for pg_isready to wait for DB readiness
+RUN apk add --no-cache openssl postgresql-client
 
 # Copy only runtime artifacts
 COPY --from=builder /app ./
