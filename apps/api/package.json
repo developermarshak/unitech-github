@@ -9,7 +9,8 @@
     "start": "node dist/server.js",
     "generate:jwt-keys": "mkdir -p .keys && openssl genrsa -out .keys/jwtRS256.key 2048 && openssl rsa -in .keys/jwtRS256.key -pubout -out .keys/jwtRS256.key.pub",
     "migration:generate": "typeorm-ts-node-esm migration:generate -d src/config/database.ts",
-    "migration:run": "typeorm-ts-node-esm migration:run -d src/config/database.ts"
+    "migration:run": "typeorm-ts-node-esm migration:run -d src/config/database.ts",
+    "clean": "rm -rf dist node_modules .turbo"
   },
   "dependencies": {
     "@octokit/rest": "^22.0.0",

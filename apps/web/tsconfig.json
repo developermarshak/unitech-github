@@ -8,8 +8,9 @@
     "baseUrl": ".",
     "jsx": "react-jsx",
     "paths": {
-      "@repo/contracts": ["../../packages/contracts/src"],
-      "@repo/api-client": ["../../packages/api-client/src"]
+      "@repo/contracts": ["../../packages/contracts/dist"],
+      "@repo/api-client": ["../../packages/api-client/dist"]
     }
   }
+
 }

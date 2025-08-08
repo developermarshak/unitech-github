@@ -15,7 +15,7 @@
     "build": "tsc",
     "dev": "tsc -w",
     "lint": "eslint \"**/*.ts\"",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist node_modules .turbo"
   },
   "dependencies": {
     "@repo/contracts": "workspace:*"

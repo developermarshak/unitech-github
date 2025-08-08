@@ -8,6 +8,4 @@ dist-ssr
 .env
 !.env.local
 .cache
-server/dist
-public/dist
 .history

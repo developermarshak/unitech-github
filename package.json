@@ -2,9 +2,14 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
+    "build:contracts": "turbo run build --filter=@repo/contracts",
+    "build:api-client": "turbo run build --filter=@repo/api-client",
+    "build:api": "turbo run build --filter=api",
+    "build:web": "turbo run build --filter=web",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "clean": "turbo run clean"
   },
   "devDependencies": {
     "eslint": "^8.57.1",

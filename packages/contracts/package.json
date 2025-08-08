@@ -9,13 +9,13 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    },
-    "./*": "./dist/*"
+    }
   },
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w",
-    "lint": "eslint \"**/*.ts\""
+    "lint": "eslint \"**/*.ts\"",
+    "clean": "rm -rf dist node_modules .turbo"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

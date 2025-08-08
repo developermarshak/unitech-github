@@ -7,24 +7,28 @@ WORKDIR /build
 RUN corepack enable && corepack prepare pnpm@10.14.0 --activate
 
 # Only copy minimal files first for better caching
-COPY pnpm-workspace.yaml pnpm-lock.yaml package.json turbo.json .npmrc ./
-COPY apps/api/package.json apps/api/tsconfig.json ./apps/api/
-COPY packages/typescript-config/package.json ./packages/typescript-config/package.json
-COPY packages/contracts/package.json ./packages/contracts/package.json
-COPY packages/api-client/package.json ./packages/api-client/package.json
-COPY packages/eslint-config/package.json ./packages/eslint-config/package.json
+COPY ./package.json ./pnpm-lock.yaml ./turbo.json ./pnpm-workspace.yaml .npmrc ./
+COPY ./apps/api/package.json ./apps/api/tsconfig.json ./apps/api/
+COPY ./packages/contracts/package.json ./packages/contracts/tsconfig.json ./packages/contracts/
+COPY ./packages/api-client/package.json ./packages/api-client/tsconfig.json ./packages/api-client/
+COPY ./packages/eslint-config/package.json ./packages/eslint-config/
+COPY ./packages/typescript-config/package.json ./packages/typescript-config/
 
+RUN pnpm install --frozen-lockfile
 
-RUN pnpm --filter api install --frozen-lockfile
+# Copy packages to build
+COPY ./packages/contracts/src ./packages/contracts/src
+COPY ./packages/api-client/src ./packages/api-client/src
+COPY ./packages/eslint-config ./packages/eslint-config
+COPY ./packages/typescript-config ./packages/typescript-config
 
-# Copy sources and shared tsconfig and contracts src for path mapping
-COPY apps/api/src ./apps/api/src
-COPY packages/typescript-config ./packages/typescript-config
-COPY packages/contracts ./packages/contracts
-COPY packages/api-client ./packages/api-client
-COPY packages/eslint-config ./packages/eslint-config
+RUN pnpm run build:contracts
+RUN pnpm run build:api-client
 
-RUN pnpm --filter api build
+# Copy api to build
+COPY ./apps/api/src ./apps/api/src
+RUN pnpm run build:api
+
 RUN pnpm --filter api deploy --prod /app
 
 
