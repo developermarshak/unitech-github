@@ -15,4 +15,7 @@ if [ -z "${JWT_PUBLIC_KEY:-}" ] || [ -z "${JWT_SECRET_KEY:-}" ]; then
   fi
 fi
 
+# run migrations
+node ./dist/scripts/migrate.js
+
 exec node ./dist/server.js

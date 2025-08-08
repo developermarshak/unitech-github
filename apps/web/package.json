@@ -15,7 +15,6 @@
     "@mui/icons-material": "^7.3.0",
     "@mui/material": "^7.3.0",
     "@repo/api-client": "workspace:*",
-    "@repo/ui": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

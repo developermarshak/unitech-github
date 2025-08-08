@@ -4,6 +4,9 @@ import dotenv from "dotenv";
 import { Repository } from "../entities/Repository.js";
 dotenv.config(); //todo: use sep config class
 
+const isProd = process.env.NODE_ENV === "production";
+const isDev = process.env.NODE_ENV === "development";
+
 export const AppDataSource = new DataSource({
   type: "postgres",
   host: process.env.DATABASE_HOST,
@@ -11,8 +14,10 @@ export const AppDataSource = new DataSource({
   username: process.env.DATABASE_USERNAME,
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_NAME,
-  synchronize: process.env.NODE_ENV === "development",
-  logging: process.env.NODE_ENV === "development",
+  synchronize: isDev,
+  logging: isDev,
   entities: [User, Repository],
-  migrations: ["src/migrations/*.ts"],
+  migrations: [
+    isProd ? "dist/migrations/*.{js,cjs,mjs}" : "src/migrations/*.ts",
+  ],
 });

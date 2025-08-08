@@ -1,4 +1,4 @@
-import { useAuthForm } from "../hooks/useAuthForm";
+import { useAuthForm } from "../hooks/useAuthForm.js";
 import React, { useState } from "react";
 import {
   Box,

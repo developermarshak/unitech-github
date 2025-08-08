@@ -1,11 +1,8 @@
-import { inject, injectable } from "tsyringe";
-import { DataSource, Repository as TypeOrmRepository } from "typeorm";
+import { inject, injectable } from 'tsyringe';
 
-import { EventBus } from "./eventBus.js";
-import { GitHubService } from "../services/githubService.js";
-import { Repository as RepositoryEntity } from "../entities/Repository.js";
-import { UpdateRepositoryCommand } from "../handlers/repository/commands/updateRepositoryCommand.js";
-import { GetRepositoryInfoFromGitHubQuery } from "../handlers/repository/queries/getRepositoryInfoFromGitHubQuery.js";
+import { EventBus } from './eventBus.js';
+import { UpdateRepositoryCommand } from '../handlers/repository/commands/updateRepositoryCommand.js';
+import { GetRepositoryInfoFromGitHubQuery } from '../handlers/repository/queries/getRepositoryInfoFromGitHubQuery.js';
 
 interface RepositoryCreatedPayload {
   id: string;
@@ -22,28 +19,22 @@ interface RepositoryCreatedPayload {
 @injectable()
 export class RepositoryCreatedListener {
   constructor(
-    @inject("EventBus") private readonly eventBus: EventBus,
+    @inject('EventBus') private readonly eventBus: EventBus,
 
-    @inject("UpdateRepositoryCommand")
-    private readonly updateRepositoryCommand: UpdateRepositoryCommand,
-    @inject("GetRepositoryInfoFromGitHubQuery")
-    private readonly getRepositoryInfoFromGitHubQuery: GetRepositoryInfoFromGitHubQuery,
+    @inject('UpdateRepositoryCommand') private readonly updateRepositoryCommand: UpdateRepositoryCommand,
+    @inject('GetRepositoryInfoFromGitHubQuery') private readonly getRepositoryInfoFromGitHubQuery: GetRepositoryInfoFromGitHubQuery,
   ) {
-    this.eventBus.on(
-      "repository.created",
-      (payload: RepositoryCreatedPayload) => {
-        // Fire and forget – we purposefully do not await here to avoid blocking
-        // the event loop of the HTTP request that emitted this event.
-        void this.handle(payload);
-      },
-    );
+
+    this.eventBus.on('repository.created', (payload: RepositoryCreatedPayload) => {
+      // Fire and forget – we purposefully do not await here to avoid blocking
+      // the event loop of the HTTP request that emitted this event.
+      void this.handle(payload);
+    });
   }
 
   private async handle(payload: RepositoryCreatedPayload): Promise<void> {
     try {
-      const repoInfo = await this.getRepositoryInfoFromGitHubQuery.execute(
-        payload.projectPath,
-      );
+      const repoInfo = await this.getRepositoryInfoFromGitHubQuery.execute(payload.projectPath);
 
       await this.updateRepositoryCommand.execute({
         id: payload.id,
@@ -51,11 +42,9 @@ export class RepositoryCreatedListener {
         repoInfo: repoInfo,
       });
 
-      console.log(
-        `RepositoryCreatedListener: enriched repository ${payload.projectPath}`,
-      );
+      console.log(`RepositoryCreatedListener: enriched repository ${payload.projectPath}`);
     } catch (error) {
-      console.error("RepositoryCreatedListener failed to process event", error);
+      console.error('RepositoryCreatedListener failed to process event', error);
     }
   }
 }

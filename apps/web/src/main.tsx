@@ -1,11 +1,11 @@
 import { configureApiClient } from "@repo/api-client";
-import { useAuth } from "./hooks/useAuth";
+import { useAuth } from "./hooks/useAuth.js";
 import { createRoot } from "react-dom/client";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Box, Button } from "@mui/material";
-import { AuthPage } from "./pages/AuthPage";
-import { RepositoryPage } from "./pages/RepositoryPage";
+import { AuthPage } from "./pages/AuthPage.js";
+import { RepositoryPage } from "./pages/RepositoryPage.js";
 
 configureApiClient({
   baseUrl: import.meta.env.VITE_API_URL || "/api",

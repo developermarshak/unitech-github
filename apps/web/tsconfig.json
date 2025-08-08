@@ -2,6 +2,9 @@
   "extends": "@repo/typescript-config/vite.json",
   "include": ["src"],
   "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ESNext",
     "baseUrl": ".",
     "jsx": "react-jsx",
     "paths": {

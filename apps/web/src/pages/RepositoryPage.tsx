@@ -13,8 +13,8 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
-import { useRepositories } from "../hooks/useRepositories";
-import { RepositorySchema } from "../hooks/useRepositories";
+import { useRepositories } from "../hooks/useRepositories.js";
+import { RepositorySchema } from "../hooks/useRepositories.js";
 
 export const RepositoryPage: React.FC = () => {
   const [repoInput, setRepoInput] = useState("");
