@@ -17,6 +17,8 @@
 docker-compose up -d
 ```
 
+Application will be available on [localhost:8080](http://localhost:8080)
+
 *Thats all.*
 
 ## Development Setup
