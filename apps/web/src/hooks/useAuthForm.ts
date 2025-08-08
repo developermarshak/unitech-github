@@ -97,8 +97,12 @@ export const useAuthForm = (
             email: formData.email,
             password: formData.password,
           });
-          // Switch to sign-in mode after successful sign-up so the user can login immediately.
-          toggleMode();
+          const { accessToken } = await apiClient.signin({
+            email: formData.email,
+            password: formData.password,
+          });
+          localStorage.setItem("accessToken", accessToken);
+          onSuccess?.(accessToken);
         } else {
           const { accessToken } = await apiClient.signin({
             email: formData.email,
